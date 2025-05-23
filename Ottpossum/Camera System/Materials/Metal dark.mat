@@ -11,7 +11,8 @@ Material:
   m_Shader: {fileID: 4800000, guid: 0b7113dea2069fc4e8943843eff19f70, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _ENABLE_GEOMETRIC_SPECULAR_AA
   m_InvalidKeywords:
   - BAKERY_LMSPEC
   - BAKERY_MONOSH
@@ -194,6 +195,7 @@ Material:
     - _BAKERY_LMSPEC: 1
     - _BAKERY_SHNONLINEAR: 1
     - _BakeryMode: 3
+    - _Bicubic: 0
     - _BicubicLightmap: 1
     - _BlendMode: 0
     - _Brightness: 1
@@ -237,6 +239,7 @@ Material:
     - _EmissPulseStrength: 1
     - _EmissPulseWave: 0
     - _EmissionIntensity: 1
+    - _EnableGeometricSpecularAA: 1
     - _Filtering: 0
     - _FresnelStrength: 1
     - _GSAA: 0
@@ -255,6 +258,7 @@ Material:
     - _LTCGIStrength: 1
     - _LTCGI_DIFFUSE_OFF: 0
     - _LTCGI_SPECULAR_OFF: 0
+    - _LightmapType: 0
     - _MetaCull: 0
     - _Metallic: 0
     - _MetallicChannel: 2
@@ -307,6 +311,8 @@ Material:
     - _ScatterPow: 1
     - _ScatterShadow: 1
     - _SmoothnessTextureChannel: 0
+    - _SpecularAAScreenSpaceVariance: 0.1
+    - _SpecularAAThreshold: 0.2
     - _SpecularHighlights: 1
     - _SpecularStrength: 1
     - _SrcBlend: 1

@@ -2620,6 +2620,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AllowCollisionOwnershipTransfer: 1
+  ForceKinematicOnRemote: 0
 --- !u!114 &4003673088990950515
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2781,17 +2782,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2393362097079236993}
-  m_LocalRotation: {x: -0.9914449, y: 0.00000037425485, z: 0.00000016048337, w: -0.13052624}
-  m_LocalPosition: {x: 0, y: 0, z: -0.06059}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.01181}
   m_LocalScale: {x: 0.001177641, y: 2.355282, z: 0.0006618342}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6522640989309962258}
   m_Father: {fileID: 6814519511954489110}
-  m_LocalEulerAnglesHint: {x: -195, y: 360, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0171, y: -0.13613}
+  m_AnchoredPosition: {x: -0.01581, y: -0.00443}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!33 &708832612135362955
@@ -4938,6 +4939,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AllowCollisionOwnershipTransfer: 1
+  ForceKinematicOnRemote: 0
 --- !u!114 &6661400391210470438
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7150,6 +7152,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AllowCollisionOwnershipTransfer: 1
+  ForceKinematicOnRemote: 0
 --- !u!114 &3206613190639280062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11223,6 +11226,11 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1331892232697266477, guid: ef7c8ff67b414c24eb1a912f0a93ff68,
         type: 3}
+    - target: {fileID: 1331892232697266477, guid: ef7c8ff67b414c24eb1a912f0a93ff68,
+        type: 3}
+      propertyPath: serializationData.SerializedFormat
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3035478128231976555, guid: ef7c8ff67b414c24eb1a912f0a93ff68,
         type: 3}
       propertyPath: m_Name
@@ -11278,6 +11286,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8351672001789735569, guid: ef7c8ff67b414c24eb1a912f0a93ff68,
+        type: 3}
+      propertyPath: serializedProgramAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 0f75b569b4c02634babca76576b9d2ed,
+        type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

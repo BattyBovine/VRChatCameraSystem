@@ -60,14 +60,14 @@ namespace CameraSystem {
         public Color32 colorRed = new Color(255f, 0/255f, 0/255f, 255/255f);
         public Color32 colorBlack = new Color(0f, 0f, 0f, 255/255f);
 
-        private bool isAuthorized = false;
+        [Header("Authorisation")]
+        public bool isAuthorized = false;
+
         private bool potato = true;
 
         public void authorize() {
             Debug.Log($"[OTT_CAMERA_SYSTEM][authorize] User is now authorized to use the console");
             isAuthorized = true;
-            // disable potat mode
-            noLongerAPotato();
             foreach (VRCPickup vrcp in handheldsVrcPickups) {
                 if (Utilities.IsValid(vrcp)) {
                     vrcp.pickupable = true;
@@ -78,7 +78,6 @@ namespace CameraSystem {
         public void deauthorize() {
             Debug.Log($"[OTT_CAMERA_SYSTEM][deauthorize] User is now forbidden to have fun");
             isAuthorized = false;
-            iAmAPotato();
             foreach (VRCPickup vrcp in handheldsVrcPickups) {
                 if (Utilities.IsValid(vrcp)) {
                     vrcp.pickupable = false;

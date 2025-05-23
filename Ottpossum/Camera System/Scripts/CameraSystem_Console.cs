@@ -60,10 +60,8 @@ namespace CameraSystem {
         public Color32 colorRed = new Color(255f, 0/255f, 0/255f, 255/255f);
         public Color32 colorBlack = new Color(0f, 0f, 0f, 255/255f);
 
-        [Header("Authorisation")]
-        public bool isAuthorized = false;
-
-        private bool potato = true;
+        private bool isAuthorized = false;
+        private bool potato = false;
 
         public void authorize() {
             Debug.Log($"[OTT_CAMERA_SYSTEM][authorize] User is now authorized to use the console");
@@ -90,19 +88,18 @@ namespace CameraSystem {
                 Debug.Log($"[OTT_CAMERA_SYSTEM][Start] Sanity check failed");
                 return; // everything will be broken anyway
             }
+
             noLongerAPotato();
+
             foreach (Image img in sendLiveButtons) {
                 img.color = colorGrey;
             }
+
             // Set the first camera as live
             sendLiveCamera(0);
 
             updateCameraFovs();
 
-            // By default, users entering the theater will be unauthorized
-            // so trigger the potato mode so only the main active camera will be
-            // enabled
-            iAmAPotato();
             // and disable pickupables
             foreach (VRCPickup vrcp in handheldsVrcPickups) {
                 if (Utilities.IsValid(vrcp)) {

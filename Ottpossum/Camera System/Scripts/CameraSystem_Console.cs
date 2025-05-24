@@ -398,10 +398,13 @@ namespace CameraSystem {
             deskCamerasFovTexts[4].text = $"FOV {camera5FOV}";
             deskCamerasFovTexts[5].text = $"FOV {camera6FOV}";
             
-            handheldsFovTexts[0].text = $"FOV {camera4FOV}";
-            handheldsFovTexts[1].text = $"FOV {camera5FOV}";
-            handheldsFovTexts[2].text = $"FOV {camera6FOV}";
-        }
+            handheldsFovTexts[0].text = $"FOV {camera1FOV}";
+            handheldsFovTexts[1].text = $"FOV {camera2FOV}";
+            handheldsFovTexts[2].text = $"FOV {camera3FOV}";
+			handheldsFovTexts[3].text = $"FOV {camera4FOV}";
+			handheldsFovTexts[4].text = $"FOV {camera5FOV}";
+			handheldsFovTexts[5].text = $"FOV {camera6FOV}";
+		}
 
         public void _camera1FovChanged() {
             if (!isAuthorized) {

@@ -449,7 +449,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 100
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 60
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2739,7 +2739,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 100
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 60
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2939,7 +2939,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 100
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 60
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4570,7 +4570,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 100
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 60
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6541,7 +6541,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 100
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 60
   m_OnValueChanged:
     m_PersistentCalls:
@@ -9913,7 +9913,7 @@ MonoBehaviour:
   m_Direction: 0
   m_MinValue: 0
   m_MaxValue: 100
-  m_WholeNumbers: 1
+  m_WholeNumbers: 0
   m_Value: 60
   m_OnValueChanged:
     m_PersistentCalls:

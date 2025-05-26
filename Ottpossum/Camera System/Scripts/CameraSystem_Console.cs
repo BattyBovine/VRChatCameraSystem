@@ -64,6 +64,8 @@ namespace CameraSystem {
         private bool potato = false;
 
         public void authorize() {
+            noLongerAPotato();
+            potatoButton.enabled = false;
             Debug.Log($"[OTT_CAMERA_SYSTEM][authorize] User is now authorized to use the console");
             isAuthorized = true;
             foreach (VRCPickup vrcp in handheldsVrcPickups) {
@@ -81,6 +83,7 @@ namespace CameraSystem {
                     vrcp.pickupable = false;
                 }
             }
+            potatoButton.enabled = true;
         }
 
         void Start() {
@@ -106,6 +109,8 @@ namespace CameraSystem {
                     vrcp.pickupable = false;
                 }
             }
+
+            iAmAPotato();
         }
 
         // Quick check for validity of all our basic needed objects
@@ -172,11 +177,8 @@ namespace CameraSystem {
 
         private void noLongerAPotato() {
             Debug.Log($"[OTT_CAMERA_SYSTEM][noLongerAPotato]");
-            // For each Camera, UNLESS current camera, enable it
-            for (int i=0; i<6; i++) {
-                if (currentCamera != i) {
-                    camerasObjects[i].enabled = true;
-                }
+            for (int i = 0; i < 6; i++) {
+                camerasObjects[i].enabled = true;
             }
             potatoButton.GetComponent<Image>().color = colorGrey;
         }

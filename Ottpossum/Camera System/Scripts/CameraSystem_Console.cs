@@ -63,7 +63,7 @@ namespace CameraSystem {
         private bool isAuthorized = false;
         private bool potato = false;
 
-        public void authorize() {
+        public void Authorize() {
             noLongerAPotato();
             potatoButton.enabled = false;
             Debug.Log($"[OTT_CAMERA_SYSTEM][authorize] User is now authorized to use the console");
@@ -75,7 +75,7 @@ namespace CameraSystem {
             }
         }
 
-        public void deauthorize() {
+        public void Deauthorize() {
             Debug.Log($"[OTT_CAMERA_SYSTEM][deauthorize] User is now forbidden to have fun");
             isAuthorized = false;
             foreach (VRCPickup vrcp in handheldsVrcPickups) {

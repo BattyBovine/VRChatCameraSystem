@@ -63,6 +63,18 @@ namespace CameraSystem {
         private bool isAuthorized = false;
         private bool potato = false;
 
+
+        public void CameraEnabled()
+        {
+            Authorize();
+        }
+
+        public void CameraDisabled()
+        {
+            Deauthorize();
+        }
+
+
         public void Authorize() {
             noLongerAPotato();
             potatoButton.enabled = false;

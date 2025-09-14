@@ -49,17 +49,6 @@ namespace CameraSystem {
 		private bool potato = false;
 
 
-		public void CameraEnabled()
-		{
-			Authorize();
-		}
-
-		public void CameraDisabled()
-		{
-			Deauthorize();
-		}
-
-
 		public void Authorize() {
 			noLongerAPotato();
 			potatoButton.enabled = false;
@@ -91,8 +80,6 @@ namespace CameraSystem {
 				return; // everything will be broken anyway
 			}
 
-			noLongerAPotato();
-
 			foreach (Image img in sendLiveButtons) {
 				img.color = colorGrey;
 			}
@@ -109,7 +96,7 @@ namespace CameraSystem {
 				}
 			}
 
-			iAmAPotato();
+			Authorize();
 		}
 
 		// Quick check for validity of all our basic needed objects

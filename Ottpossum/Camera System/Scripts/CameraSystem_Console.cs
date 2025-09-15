@@ -207,7 +207,7 @@ namespace CameraSystem {
 			RequestSerialization();
 		}
 
-		public void _sendLiveCamera1() {
+		public void SendLiveCamera1() {
 			if (isAuthorized) {
 				sendLiveCamera(0);
 			} else {
@@ -215,7 +215,7 @@ namespace CameraSystem {
 			}
 		}
 
-		public void _sendLiveCamera2() {
+		public void SendLiveCamera2() {
 			if (isAuthorized) {
 				sendLiveCamera(1);
 			} else {
@@ -223,7 +223,7 @@ namespace CameraSystem {
 			}
 		}
 
-		public void _sendLiveCamera3() {
+		public void SendLiveCamera3() {
 			if (isAuthorized) {
 				sendLiveCamera(2);
 			} else {
@@ -231,7 +231,7 @@ namespace CameraSystem {
 			}
 		}
 
-		public void _sendLiveCamera4() {
+		public void SendLiveCamera4() {
 			if (isAuthorized) {
 				sendLiveCamera(3);
 			} else {
@@ -239,7 +239,7 @@ namespace CameraSystem {
 			}
 		}
 
-		public void _sendLiveCamera5() {
+		public void SendLiveCamera5() {
 			if (isAuthorized) {
 				sendLiveCamera(4);
 			} else {
@@ -247,7 +247,7 @@ namespace CameraSystem {
 			}
 		}
 
-		public void _sendLiveCamera6() {
+		public void SendLiveCamera6() {
 			if (isAuthorized) {
 				sendLiveCamera(5);
 			} else {

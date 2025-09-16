@@ -152,7 +152,7 @@ namespace CameraSystem {
 			return !error;
 		}
 
-		public void _togglePotato() {
+		public void TogglePotato() {
 			potato = !potato;
 			if (potato) {
 				iAmAPotato();

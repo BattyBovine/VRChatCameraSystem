@@ -371,27 +371,27 @@ namespace CameraSystem {
 		}
 
 		private void updateCameraFovs() {
-			Debug.Log($"[OTT_CAMERA_SYSTEM][updateCameraFovs]");
-			camerasObjects[0].fieldOfView = cameraFOV[0];
-			camerasObjects[1].fieldOfView = cameraFOV[1];
-			camerasObjects[2].fieldOfView = cameraFOV[2];
-			camerasObjects[3].fieldOfView = cameraFOV[3];
-			camerasObjects[4].fieldOfView = cameraFOV[4];
-			camerasObjects[5].fieldOfView = cameraFOV[5];
+			//Debug.Log($"[OTT_CAMERA_SYSTEM][updateCameraFovs]");
+			//camerasObjects[0].fieldOfView = cameraFOV[0];
+			//camerasObjects[1].fieldOfView = cameraFOV[1];
+			//camerasObjects[2].fieldOfView = cameraFOV[2];
+			//camerasObjects[3].fieldOfView = cameraFOV[3];
+			//camerasObjects[4].fieldOfView = cameraFOV[4];
+			//camerasObjects[5].fieldOfView = cameraFOV[5];
 			
-			deskCamerasFovTexts[0].text = $"FOV {cameraFOV[0]}";
-			deskCamerasFovTexts[1].text = $"FOV {cameraFOV[1]}";
-			deskCamerasFovTexts[2].text = $"FOV {cameraFOV[2]}";
-			deskCamerasFovTexts[3].text = $"FOV {cameraFOV[3]}";
-			deskCamerasFovTexts[4].text = $"FOV {cameraFOV[4]}";
-			deskCamerasFovTexts[5].text = $"FOV {cameraFOV[5]}";
+			//deskCamerasFovTexts[0].text = $"FOV {cameraFOV[0]}";
+			//deskCamerasFovTexts[1].text = $"FOV {cameraFOV[1]}";
+			//deskCamerasFovTexts[2].text = $"FOV {cameraFOV[2]}";
+			//deskCamerasFovTexts[3].text = $"FOV {cameraFOV[3]}";
+			//deskCamerasFovTexts[4].text = $"FOV {cameraFOV[4]}";
+			//deskCamerasFovTexts[5].text = $"FOV {cameraFOV[5]}";
 			
-			handheldsFovTexts[0].text = $"FOV {cameraFOV[0]}";
-			handheldsFovTexts[1].text = $"FOV {cameraFOV[1]}";
-			handheldsFovTexts[2].text = $"FOV {cameraFOV[2]}";
-			handheldsFovTexts[3].text = $"FOV {cameraFOV[3]}";
-			handheldsFovTexts[4].text = $"FOV {cameraFOV[4]}";
-			handheldsFovTexts[5].text = $"FOV {cameraFOV[5]}";
+			//handheldsFovTexts[0].text = $"FOV {cameraFOV[0]}";
+			//handheldsFovTexts[1].text = $"FOV {cameraFOV[1]}";
+			//handheldsFovTexts[2].text = $"FOV {cameraFOV[2]}";
+			//handheldsFovTexts[3].text = $"FOV {cameraFOV[3]}";
+			//handheldsFovTexts[4].text = $"FOV {cameraFOV[4]}";
+			//handheldsFovTexts[5].text = $"FOV {cameraFOV[5]}";
 		}
 
 		public void _camera1FovChanged() {

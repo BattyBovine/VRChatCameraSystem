@@ -6,6 +6,7 @@ using VRC.SDKBase;
 using VRC.SDK3.Data;
 using TMPro;
 using VRC.SDK3.Components;
+using VRC.SDK3.UdonNetworkCalling;
 
 namespace CameraSystem {
 	[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
@@ -85,7 +86,7 @@ namespace CameraSystem {
 			}
 
 			// Set the first camera as live
-			sendLiveCamera(0);
+			SendLiveCamera(0);
 
 			updateCameraFovs();
 
@@ -180,36 +181,38 @@ namespace CameraSystem {
 			potatoButton.GetComponent<Image>().color = colorGreen;
 		}
 
-		private void sendLiveCamera(int index) {
-			// Set the previous button to grey
-			sendLiveButtons[lastCamera].color = colorGrey;
-			// Set the new button to red
-			sendLiveButtons[index].color = colorRed;
-			// Set the live material to the right render textures
-			liveMaterial.SetTexture("_MainTex", camerasRenderTextures[index]);
-			liveMaterial.SetTexture("_EmissionMap", camerasRenderTextures[index]);
-			cameraJack.SetTexture("_MainTex", camerasRenderTextures[index]);
-			// Set the text for the current camera name
-			currentCameraText.text = $"Camera {index+1}";
+		public void SendLiveCamera(int index) {
+			if (isAuthorized)
+			{
+				// Set the previous button to grey
+				sendLiveButtons[lastCamera].color = colorGrey;
+				// Set the new button to red
+				sendLiveButtons[index].color = colorRed;
+				// Set the live material to the right render textures
+				liveMaterial.SetTexture("_MainTex", camerasRenderTextures[index]);
+				liveMaterial.SetTexture("_EmissionMap", camerasRenderTextures[index]);
+				cameraJack.SetTexture("_MainTex", camerasRenderTextures[index]);
+				// Set the text for the current camera name
+				currentCameraText.text = $"Camera {index + 1}";
 
+				// Finally set the current camera index
+				currentCamera = index;
+				lastCamera = index;
 
+				// Update potato cameras if needed
+				if (potato)
+				{
+					iAmAPotato();
+				}
 
-			// Finally set the current camera index
-			currentCamera = index;
-			lastCamera = index;
-
-			// Update potato cameras if needed
-			if (potato) {
-				iAmAPotato();
+				Networking.SetOwner(Networking.LocalPlayer, gameObject);
+				RequestSerialization();
 			}
-
-			Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
-			RequestSerialization();
 		}
 
 		public void SendLiveCamera1() {
 			if (isAuthorized) {
-				sendLiveCamera(0);
+				SendLiveCamera(0);
 			} else {
 				Debug.Log($"[OTT_CAMERA_SYSTEM][sendLiveCamera1] Unauthorized action.");
 			}
@@ -217,7 +220,7 @@ namespace CameraSystem {
 
 		public void SendLiveCamera2() {
 			if (isAuthorized) {
-				sendLiveCamera(1);
+				SendLiveCamera(1);
 			} else {
 				Debug.Log($"[OTT_CAMERA_SYSTEM][sendLiveCamera2] Unauthorized action.");
 			}
@@ -225,7 +228,7 @@ namespace CameraSystem {
 
 		public void SendLiveCamera3() {
 			if (isAuthorized) {
-				sendLiveCamera(2);
+				SendLiveCamera(2);
 			} else {
 				Debug.Log($"[OTT_CAMERA_SYSTEM][sendLiveCamera3] Unauthorized action.");
 			}
@@ -233,7 +236,7 @@ namespace CameraSystem {
 
 		public void SendLiveCamera4() {
 			if (isAuthorized) {
-				sendLiveCamera(3);
+				SendLiveCamera(3);
 			} else {
 				Debug.Log($"[OTT_CAMERA_SYSTEM][sendLiveCamera4] Unauthorized action.");
 			}
@@ -241,7 +244,7 @@ namespace CameraSystem {
 
 		public void SendLiveCamera5() {
 			if (isAuthorized) {
-				sendLiveCamera(4);
+				SendLiveCamera(4);
 			} else {
 				Debug.Log($"[OTT_CAMERA_SYSTEM][sendLiveCamera5] Unauthorized action.");
 			}
@@ -249,7 +252,7 @@ namespace CameraSystem {
 
 		public void SendLiveCamera6() {
 			if (isAuthorized) {
-				sendLiveCamera(5);
+				SendLiveCamera(5);
 			} else {
 				Debug.Log($"[OTT_CAMERA_SYSTEM][sendLiveCamera6] Unauthorized action.");
 			}
@@ -269,7 +272,7 @@ namespace CameraSystem {
 		public override void OnPreSerialization() {
 			if (lastCamera != currentCamera) {
 				Debug.Log($"[OTT_CAMERA_SYSTEM][OnDeserialization] Last Camera: {lastCamera}, New Camera: {currentCamera}");
-				sendLiveCamera(currentCamera);
+				SendLiveCamera(currentCamera);
 			}
 
 			// Convert the list _playersList to the network-synced variable _jsonPlayersList
@@ -293,7 +296,7 @@ namespace CameraSystem {
 			// Then update the players list
 			updatePlayerlists();
 			updateCameraFovs();
-			sendLiveCamera(currentCamera);
+			SendLiveCamera(currentCamera);
 		}
 
 		public void addPlayer(VRCPlayerApi player) {

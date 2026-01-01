@@ -6,7 +6,7 @@ using VRC.SDKBase;
 using VRC.SDK3.Data;
 using TMPro;
 using VRC.SDK3.Components;
-using VRC.SDK3.UdonNetworkCalling;
+
 
 namespace CameraSystem {
 	[UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
@@ -55,11 +55,11 @@ namespace CameraSystem {
 			potatoButton.enabled = false;
 			Debug.Log($"[OTT_CAMERA_SYSTEM][authorize] User is now authorized to use the console");
 			isAuthorized = true;
-			foreach (VRCPickup vrcp in handheldsVrcPickups) {
-				if (Utilities.IsValid(vrcp)) {
-					//vrcp.pickupable = true;
-				}
-			}
+			//foreach (VRCPickup vrcp in handheldsVrcPickups) {
+			//	if (Utilities.IsValid(vrcp)) {
+			//		vrcp.pickupable = true;
+			//	}
+			//}
 		}
 
 		public void Deauthorize() {
@@ -174,9 +174,7 @@ namespace CameraSystem {
 			Debug.Log($"[OTT_CAMERA_SYSTEM][iAmAPotato]");
 			// For each Camera, UNLESS current camera, disable it
 			for (int i=0; i<6; i++) {
-				if (currentCamera != i) {
-					camerasObjects[i].enabled = false;
-				}
+				camerasObjects[i].enabled = currentCamera != i ? false : true;
 			}
 			potatoButton.GetComponent<Image>().color = colorGreen;
 		}

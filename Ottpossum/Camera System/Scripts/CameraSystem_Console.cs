@@ -51,7 +51,6 @@ namespace CameraSystem {
 
 
 		public void Authorize() {
-			noLongerAPotato();
 			potatoButton.enabled = false;
 			Debug.Log($"[OTT_CAMERA_SYSTEM][authorize] User is now authorized to use the console");
 			isAuthorized = true;
@@ -153,13 +152,14 @@ namespace CameraSystem {
 			return !error;
 		}
 
-		public void TogglePotato() {
+		public bool TogglePotato() {
 			potato = !potato;
 			if (potato) {
 				iAmAPotato();
 			} else {
 				noLongerAPotato();
 			}
+			return potato;
 		}
 
 		private void noLongerAPotato() {
@@ -173,8 +173,8 @@ namespace CameraSystem {
 		private void iAmAPotato() {
 			Debug.Log($"[OTT_CAMERA_SYSTEM][iAmAPotato]");
 			// For each Camera, UNLESS current camera, disable it
-			for (int i=0; i<6; i++) {
-				camerasObjects[i].enabled = currentCamera != i ? false : true;
+			for (int i = 0; i < camerasObjects.Length; i++) {
+				camerasObjects[i].enabled = currentCamera == i ? true : false;
 			}
 			potatoButton.GetComponent<Image>().color = colorGreen;
 		}
@@ -187,7 +187,7 @@ namespace CameraSystem {
 				// Set the new button to red
 				sendLiveButtons[index].color = colorRed;
 				// Set the live material to the right render textures
-				liveMaterial.SetTexture("_MainTex", camerasRenderTextures[index]);
+				//liveMaterial.SetTexture("_MainTex", camerasRenderTextures[index]);
 				liveMaterial.SetTexture("_EmissionMap", camerasRenderTextures[index]);
 				cameraJack.SetTexture("_MainTex", camerasRenderTextures[index]);
 				// Set the text for the current camera name
@@ -201,6 +201,10 @@ namespace CameraSystem {
 				if (potato)
 				{
 					iAmAPotato();
+				}
+				else
+				{
+					noLongerAPotato();
 				}
 
 				Networking.SetOwner(Networking.LocalPlayer, gameObject);

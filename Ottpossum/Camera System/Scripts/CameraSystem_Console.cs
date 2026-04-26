@@ -1,11 +1,13 @@
 ﻿
+using System;
+using TMPro;
 using UdonSharp;
 using UnityEngine;
 using UnityEngine.UI;
-using VRC.SDKBase;
-using VRC.SDK3.Data;
-using TMPro;
 using VRC.SDK3.Components;
+using VRC.SDK3.Data;
+using VRC.SDKBase;
+using VRC.Udon.Common;
 
 
 namespace CameraSystem {
@@ -25,7 +27,7 @@ namespace CameraSystem {
 		public VRCPickup[] handheldsVrcPickups;
 		public GameObject initErrorWarningText;
 		public Slider[] cameraFovSliders;
-		public Button potatoButton;
+		public Button[] potatoButtons;
 		// TODO prev btns, next btns, current username, selected username
 
 		[Header("Feedbacks")]
@@ -38,7 +40,9 @@ namespace CameraSystem {
 		[HideInInspector] [UdonSynced] public bool[] cameraFollow = new bool[6];
 		[HideInInspector] [UdonSynced] private string _jsonPlayersList = "";
 		private DataList _playersList = new DataList();
-		[UdonSynced] public float[] cameraFOV = new float[6];
+		//[UdonSynced] public float[] cameraFOV = new float[6];
+
+		[SerializeField] private ViewTabletSpawner _ViewTabletSpawner;
 
 		[Header("State colors")]
 		public Color32 colorGreen = new Color(15/255f, 132/255f, 12/255f, 255/255f);
@@ -47,33 +51,124 @@ namespace CameraSystem {
 		public Color32 colorBlack = new Color(0f, 0f, 0f, 255/255f);
 
 		private bool isAuthorized = false;
-		private bool potato = false;
+		private bool isViewable = false;
+		private bool potato = true;
+
+		private bool PlayerHasLookedDown = false;
+		private bool PlayerHasLookedUp = false;
+		private float PlayerLookTimer = 0.0f;
+
+
+		void Update()
+		{
+			if (!Networking.LocalPlayer.IsUserInVR() && Input.GetKeyDown(KeyCode.Tab))
+			{
+				ToggleViewable();
+			}
+
+			if (PlayerLookTimer > 0.0f)
+			{
+				PlayerLookTimer -= Time.deltaTime;
+				if (PlayerLookTimer <= 0.0f)
+				{
+					PlayerHasLookedDown = PlayerHasLookedUp = false;
+				}
+			}
+		}
+
+		public override void InputLookVertical(float Value, UdonInputEventArgs Args)
+		{
+			if (Networking.LocalPlayer.IsUserInVR())
+			{
+				if (!PlayerHasLookedDown && Value < -0.85f)
+				{
+					PlayerHasLookedUp = false;
+					PlayerHasLookedDown = true;
+					PlayerLookTimer = 0.2f;
+				}
+				else if (!PlayerHasLookedUp && Value > 0.85f)
+				{
+					PlayerHasLookedUp = true;
+				}
+
+				if (PlayerHasLookedDown && PlayerHasLookedUp)
+				{
+					PlayerHasLookedDown = PlayerHasLookedUp = false;
+					ToggleViewable();
+				}
+			}
+
+			base.InputLookVertical(Value, Args);
+		}
 
 
 		public void Authorize() {
-			potatoButton.enabled = false;
 			Debug.Log($"[OTT_CAMERA_SYSTEM][authorize] User is now authorized to use the console");
 			isAuthorized = true;
-			//foreach (VRCPickup vrcp in handheldsVrcPickups) {
-			//	if (Utilities.IsValid(vrcp)) {
-			//		vrcp.pickupable = true;
-			//	}
-			//}
-		}
 
-		public void Deauthorize() {
-			Debug.Log($"[OTT_CAMERA_SYSTEM][deauthorize] User is now forbidden to have fun");
-			isAuthorized = false;
+			foreach (Button potatoButton in potatoButtons)
+			{
+				potatoButton.enabled = true;
+			}
+
 			foreach (VRCPickup vrcp in handheldsVrcPickups) {
 				if (Utilities.IsValid(vrcp)) {
 					vrcp.pickupable = false;
 				}
 			}
-			potatoButton.enabled = true;
+		}
+
+		public void Deauthorize() {
+			Debug.Log($"[OTT_CAMERA_SYSTEM][deauthorize] User is now forbidden to have fun");
+			isAuthorized = false;
+			iAmAPotato();
+
+			foreach (Button potatoButton in potatoButtons)
+			{
+				potatoButton.enabled = false;
+			}
+
+			foreach (VRCPickup vrcp in handheldsVrcPickups) {
+				if (Utilities.IsValid(vrcp)) {
+					vrcp.pickupable = false;
+				}
+			}
+		}
+
+		public void ToggleViewable()
+		{
+			if (isViewable)
+			{
+				SetUnviewable();
+			}
+			else
+			{
+				SetViewable();
+			}
+		}
+
+		public void SetViewable()
+		{
+			_EnableViewableLiveCamera_Private(currentCamera);
+
+			isViewable = true;
+			_ViewTabletSpawner.SpawnAtPlayerHead(Networking.LocalPlayer);
+		}
+
+		public void SetUnviewable()
+		{
+			isViewable = false;
+			foreach (Camera Cam in camerasObjects)
+			{
+				Cam.enabled = false;
+			}
+			_ViewTabletSpawner.Despawn();
 		}
 
 		void Start() {
-			Debug.Log($"[OTT_CAMERA_SYSTEM][Start] FOV of camera 1 is " + cameraFOV[0]);
+			iAmAPotato();
+
+			//Debug.Log($"[OTT_CAMERA_SYSTEM][Start] FOV of camera 1 is " + cameraFOV[0]);
 			
 			if (!sanityCheck()) {
 				Debug.Log($"[OTT_CAMERA_SYSTEM][Start] Sanity check failed");
@@ -87,16 +182,12 @@ namespace CameraSystem {
 			// Set the first camera as live
 			SendLiveCamera(0);
 
-			updateCameraFovs();
-
 			// and disable pickupables
 			foreach (VRCPickup vrcp in handheldsVrcPickups) {
 				if (Utilities.IsValid(vrcp)) {
 					vrcp.pickupable = false;
 				}
 			}
-
-			Authorize();
 		}
 
 		// Quick check for validity of all our basic needed objects
@@ -164,24 +255,36 @@ namespace CameraSystem {
 
 		private void noLongerAPotato() {
 			Debug.Log($"[OTT_CAMERA_SYSTEM][noLongerAPotato]");
+			
 			for (int i = 0; i < 6; i++) {
 				camerasObjects[i].enabled = true;
 			}
-			potatoButton.GetComponent<Image>().color = colorGrey;
+
+			foreach (Button potatoButton in potatoButtons)
+			{
+				potatoButton.GetComponent<Image>().color = colorGrey;
+			}
 		}
 
 		private void iAmAPotato() {
 			Debug.Log($"[OTT_CAMERA_SYSTEM][iAmAPotato]");
+			
 			// For each Camera, UNLESS current camera, disable it
 			for (int i = 0; i < camerasObjects.Length; i++) {
 				camerasObjects[i].enabled = currentCamera == i ? true : false;
 			}
-			potatoButton.GetComponent<Image>().color = colorGreen;
+
+			foreach (Button potatoButton in potatoButtons)
+			{
+				potatoButton.GetComponent<Image>().color = colorGreen;
+			}
 		}
 
 		public void SendLiveCamera(int index) {
 			if (isAuthorized)
 			{
+				Networking.SetOwner(Networking.LocalPlayer, gameObject);
+
 				// Set the previous button to grey
 				sendLiveButtons[lastCamera].color = colorGrey;
 				// Set the new button to red
@@ -207,9 +310,20 @@ namespace CameraSystem {
 					noLongerAPotato();
 				}
 
-				Networking.SetOwner(Networking.LocalPlayer, gameObject);
 				RequestSerialization();
 			}
+			else if (isViewable)
+			{
+				_EnableViewableLiveCamera_Private(index);
+			}
+		}
+		private void _EnableViewableLiveCamera_Private(int Index)
+		{
+			for (int i = 0; i < camerasObjects.Length; i++)
+			{
+				camerasObjects[i].enabled = (i == Index) ? true : false;
+			}
+			liveMaterial.SetTexture("_EmissionMap", camerasRenderTextures[Index]);
 		}
 
 		public void SendLiveCamera1() {
@@ -297,7 +411,6 @@ namespace CameraSystem {
 			}
 			// Then update the players list
 			updatePlayerlists();
-			updateCameraFovs();
 			SendLiveCamera(currentCamera);
 		}
 
@@ -399,76 +512,76 @@ namespace CameraSystem {
 			//handheldsFovTexts[5].text = $"FOV {cameraFOV[5]}";
 		}
 
-		public void _camera1FovChanged() {
-			if (!isAuthorized) {
-				Debug.Log($"[OTT_CAMERA_SYSTEM][_camera1FovChanged] Unauthorized action.");
-				cameraFovSliders[0].value = cameraFOV[0];
-				return;
-			}
-			cameraFOV[0] = cameraFovSliders[0].value;
-			Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
-			RequestSerialization();
-			updateCameraFovs();
-		}
+		//public void _camera1FovChanged() {
+		//	if (!isAuthorized) {
+		//		Debug.Log($"[OTT_CAMERA_SYSTEM][_camera1FovChanged] Unauthorized action.");
+		//		cameraFovSliders[0].value = cameraFOV[0];
+		//		return;
+		//	}
+		//	cameraFOV[0] = cameraFovSliders[0].value;
+		//	Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
+		//	RequestSerialization();
+		//	updateCameraFovs();
+		//}
 
-		public void _camera2FovChanged() {
-			if (!isAuthorized) {
-				Debug.Log($"[OTT_CAMERA_SYSTEM][_camera2FovChanged] Unauthorized action.");
-				cameraFovSliders[1].value = cameraFOV[1];
-				return;
-			}
-			cameraFOV[1] = cameraFovSliders[1].value;
-			Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
-			RequestSerialization();
-			updateCameraFovs();
-		}
+		//public void _camera2FovChanged() {
+		//	if (!isAuthorized) {
+		//		Debug.Log($"[OTT_CAMERA_SYSTEM][_camera2FovChanged] Unauthorized action.");
+		//		cameraFovSliders[1].value = cameraFOV[1];
+		//		return;
+		//	}
+		//	cameraFOV[1] = cameraFovSliders[1].value;
+		//	Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
+		//	RequestSerialization();
+		//	updateCameraFovs();
+		//}
 
-		public void _camera3FovChanged() {
-			if (!isAuthorized) {
-				Debug.Log($"[OTT_CAMERA_SYSTEM][_camera3FovChanged] Unauthorized action.");
-				cameraFovSliders[2].value = cameraFOV[2];
-				return;
-			}
-			cameraFOV[2] = cameraFovSliders[2].value;
-			Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
-			RequestSerialization();
-			updateCameraFovs();
-		}
+		//public void _camera3FovChanged() {
+		//	if (!isAuthorized) {
+		//		Debug.Log($"[OTT_CAMERA_SYSTEM][_camera3FovChanged] Unauthorized action.");
+		//		cameraFovSliders[2].value = cameraFOV[2];
+		//		return;
+		//	}
+		//	cameraFOV[2] = cameraFovSliders[2].value;
+		//	Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
+		//	RequestSerialization();
+		//	updateCameraFovs();
+		//}
 
-		public void _camera4FovChanged() {
-			if (!isAuthorized) {
-				Debug.Log($"[OTT_CAMERA_SYSTEM][_camera4FovChanged] Unauthorized action.");
-				cameraFovSliders[3].value = cameraFOV[3];
-				return;
-			}
-			cameraFOV[3] = cameraFovSliders[3].value;
-			Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
-			RequestSerialization();
-			updateCameraFovs();
-		}
+		//public void _camera4FovChanged() {
+		//	if (!isAuthorized) {
+		//		Debug.Log($"[OTT_CAMERA_SYSTEM][_camera4FovChanged] Unauthorized action.");
+		//		cameraFovSliders[3].value = cameraFOV[3];
+		//		return;
+		//	}
+		//	cameraFOV[3] = cameraFovSliders[3].value;
+		//	Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
+		//	RequestSerialization();
+		//	updateCameraFovs();
+		//}
 
-		public void _camera5FovChanged() {
-			if (!isAuthorized) {
-				Debug.Log($"[OTT_CAMERA_SYSTEM][_camera5FovChanged] Unauthorized action.");
-				cameraFovSliders[4].value = cameraFOV[4];
-				return;
-			}
-			cameraFOV[4] = cameraFovSliders[4].value;
-			Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
-			RequestSerialization();
-			updateCameraFovs();
-		}
+		//public void _camera5FovChanged() {
+		//	if (!isAuthorized) {
+		//		Debug.Log($"[OTT_CAMERA_SYSTEM][_camera5FovChanged] Unauthorized action.");
+		//		cameraFovSliders[4].value = cameraFOV[4];
+		//		return;
+		//	}
+		//	cameraFOV[4] = cameraFovSliders[4].value;
+		//	Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
+		//	RequestSerialization();
+		//	updateCameraFovs();
+		//}
 
-		public void _camera6FovChanged() {
-			if (!isAuthorized) {
-				Debug.Log($"[OTT_CAMERA_SYSTEM][_camera6FovChanged] Unauthorized action.");
-				cameraFovSliders[5].value = cameraFOV[5];
-				return;
-			}
-			cameraFOV[5] = cameraFovSliders[5].value;
-			Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
-			RequestSerialization();
-			updateCameraFovs();
-		}
+		//public void _camera6FovChanged() {
+		//	if (!isAuthorized) {
+		//		Debug.Log($"[OTT_CAMERA_SYSTEM][_camera6FovChanged] Unauthorized action.");
+		//		cameraFovSliders[5].value = cameraFOV[5];
+		//		return;
+		//	}
+		//	cameraFOV[5] = cameraFovSliders[5].value;
+		//	Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
+		//	RequestSerialization();
+		//	updateCameraFovs();
+		//}
 	}
 }

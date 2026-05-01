@@ -152,7 +152,7 @@ namespace CameraSystem {
 			_EnableViewableLiveCamera_Private(currentCamera);
 
 			isViewable = true;
-			_ViewTabletSpawner.SpawnAtPlayerHead(Networking.LocalPlayer);
+			_ViewTabletSpawner.SpawnAtLocalPlayerHead();
 		}
 
 		public void SetUnviewable()

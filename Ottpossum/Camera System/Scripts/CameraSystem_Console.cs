@@ -1,5 +1,4 @@
 ﻿
-using System;
 using TMPro;
 using UdonSharp;
 using UnityEngine;
@@ -34,8 +33,8 @@ namespace CameraSystem {
 		public Material liveMaterial;
 		public Material cameraJack;
 
-		[HideInInspector] [UdonSynced] public int currentCamera = 0;
-		private int lastCamera = 0;
+		[UdonSynced] private int currentCamera = 5;
+		private int lastCamera = 5;
 		[HideInInspector] [UdonSynced] public string[] cameraFollowUsername = new string[6];
 		[HideInInspector] [UdonSynced] public bool[] cameraFollow = new bool[6];
 		[HideInInspector] [UdonSynced] private string _jsonPlayersList = "";
@@ -106,6 +105,8 @@ namespace CameraSystem {
 			Debug.Log($"[OTT_CAMERA_SYSTEM][authorize] User is now authorized to use the console");
 			isAuthorized = true;
 
+			SendLiveCamera(currentCamera);
+
 			foreach (Button potatoButton in potatoButtons)
 			{
 				potatoButton.enabled = true;
@@ -169,7 +170,7 @@ namespace CameraSystem {
 			iAmAPotato();
 
 			//Debug.Log($"[OTT_CAMERA_SYSTEM][Start] FOV of camera 1 is " + cameraFOV[0]);
-			
+
 			if (!sanityCheck()) {
 				Debug.Log($"[OTT_CAMERA_SYSTEM][Start] Sanity check failed");
 				return; // everything will be broken anyway
@@ -179,8 +180,8 @@ namespace CameraSystem {
 				img.color = colorGrey;
 			}
 
-			// Set the first camera as live
-			SendLiveCamera(0);
+			// Set the current camera as live
+			SendLiveCamera(currentCamera);
 
 			// and disable pickupables
 			foreach (VRCPickup vrcp in handheldsVrcPickups) {
@@ -256,7 +257,7 @@ namespace CameraSystem {
 		private void noLongerAPotato() {
 			Debug.Log($"[OTT_CAMERA_SYSTEM][noLongerAPotato]");
 			
-			for (int i = 0; i < 6; i++) {
+			for (int i = 0; i < camerasObjects.Length; i++) {
 				camerasObjects[i].enabled = true;
 			}
 
@@ -290,7 +291,6 @@ namespace CameraSystem {
 				// Set the new button to red
 				sendLiveButtons[index].color = colorRed;
 				// Set the live material to the right render textures
-				//liveMaterial.SetTexture("_MainTex", camerasRenderTextures[index]);
 				liveMaterial.SetTexture("_EmissionMap", camerasRenderTextures[index]);
 				cameraJack.SetTexture("_MainTex", camerasRenderTextures[index]);
 				// Set the text for the current camera name
@@ -314,6 +314,8 @@ namespace CameraSystem {
 			}
 			else if (isViewable)
 			{
+				currentCamera = index;
+				lastCamera = index;
 				_EnableViewableLiveCamera_Private(index);
 			}
 		}
@@ -324,6 +326,7 @@ namespace CameraSystem {
 				camerasObjects[i].enabled = (i == Index) ? true : false;
 			}
 			liveMaterial.SetTexture("_EmissionMap", camerasRenderTextures[Index]);
+			cameraJack.SetTexture("_MainTex", camerasRenderTextures[Index]);
 		}
 
 		public void SendLiveCamera1() {
@@ -414,7 +417,8 @@ namespace CameraSystem {
 			SendLiveCamera(currentCamera);
 		}
 
-		public void addPlayer(VRCPlayerApi player) {
+		public void addPlayer(VRCPlayerApi player)
+		{
 			// Invalid or already contains the user ? skip
 			if (!Utilities.IsValid(player)) { return; }
 			if (_playersList.Contains(player.displayName)) { return; }

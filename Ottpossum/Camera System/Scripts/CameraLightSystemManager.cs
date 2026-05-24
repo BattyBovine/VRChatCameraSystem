@@ -20,7 +20,7 @@ namespace CameraSystem {
         public TextMeshProUGUI[] cameraTextButtons;
 
         private int lastCamera = 0;
-        [HideInInspector] [UdonSynced] public int currentCamera = 0;
+        [UdonSynced] private int currentCamera = 5;
 
         [Header("State colors")]
         public Color32 colorGreen = new Color(15/255f, 132/255f, 12/255f, 255/255f);

@@ -13,6 +13,7 @@ namespace CameraSystem {
 	public class CameraSystem_Console : UdonSharpBehaviour {
 		[Header("Cameras")]
 		public Camera[] camerasObjects;
+		public MeshRenderer[] camerasMeshes;
 		public RenderTexture[] camerasRenderTextures;
 		public Material[] camerasMaterials;
 
@@ -103,6 +104,10 @@ namespace CameraSystem {
 
 			SendLiveCamera(currentCamera);
 
+			foreach (MeshRenderer CameraMesh in camerasMeshes) {
+				CameraMesh.enabled = true;
+			}
+
 			foreach (Button potatoButton in potatoButtons)
 			{
 				potatoButton.enabled = true;
@@ -119,6 +124,10 @@ namespace CameraSystem {
 			Debug.Log($"[OTT_CAMERA_SYSTEM][deauthorize] User is now forbidden to have fun");
 			isAuthorized = false;
 			iAmAPotato();
+
+			foreach (MeshRenderer CameraMesh in camerasMeshes) {
+				CameraMesh.enabled = false;
+			}
 
 			foreach (Button potatoButton in potatoButtons)
 			{
